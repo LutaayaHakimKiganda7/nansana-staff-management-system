@@ -1,0 +1,15 @@
+ALTER TABLE teachers ADD COLUMN biometric_consent_at DATETIME NULL;
+
+CREATE TABLE IF NOT EXISTS biometric_samples (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  teacher_id INT UNSIGNED NOT NULL,
+  slot VARCHAR(20) NOT NULL,
+  quality TINYINT UNSIGNED NULL,
+  hash CHAR(64) NOT NULL,
+  payload MEDIUMTEXT NOT NULL,
+  captured_by INT UNSIGNED NULL,
+  captured_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY teacher_slot (teacher_id,slot),
+  INDEX (hash),
+  FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4

@@ -1,0 +1,6 @@
+# Use ONLY if your host will not let you point the domain at the public/ folder.
+# Copy this file to the project root as ".htaccess".
+RewriteEngine On
+RewriteRule ^(app|database|storage|cron|deploy|desktop)(/|$) - [F,L]
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]

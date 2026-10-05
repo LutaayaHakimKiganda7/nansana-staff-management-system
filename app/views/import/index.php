@@ -1,0 +1,9 @@
+<?php $title='Import teachers'; ?>
+<h1>Import teachers from CSV</h1><p class="muted">Move existing records from Excel. Nothing is saved until you review the check below and confirm.</p>
+<div class="card narrow"><ol class="muted" style="padding-left:1.2rem;margin:0 0 1rem"><li>Download the template and fill one teacher per row.</li><li>In Excel choose Save As, CSV.</li><li>Dates: dd/mm/yyyy or yyyy-mm-dd. The school column takes the EMIS code or exact school name.</li></ol>
+<form method="post" action="<?=url('import/upload')?>" enctype="multipart/form-data" class="form"><?=Csrf::field()?><label>CSV file<input type="file" name="file" accept=".csv" required></label>
+<div class="row"><button class="btn primary">Check file</button><a class="btn" href="<?=url('import/template')?>">Download template</a></div></form></div>
+<?php if($imp): ?><section class="card"><h2>Check result for <?=e($imp['file'])?></h2><p><b><?=count($imp['rows'])?></b> rows are ready to import. <b><?=count($imp['errors'])?></b> rows have problems and will be skipped.</p>
+<?php if($imp['errors']): ?><div class="tablewrap"><table><thead><tr><th>Row</th><th>Problem</th></tr></thead><tbody><?php foreach(array_slice($imp['errors'],0,100) as $e): ?><tr><td><?=$e[0]?></td><td><?=e($e[1])?></td></tr><?php endforeach; ?></tbody></table></div><?php if(count($imp['errors'])>100): ?><p class="muted">Showing the first 100.</p><?php endif; endif; ?>
+<div class="row" style="margin-top:1rem"><?php if($imp['rows']): ?><form method="post" action="<?=url('import/commit')?>" data-confirm="Import <?=count($imp['rows'])?> teachers now?"><?=Csrf::field()?><button class="btn primary">Import <?=count($imp['rows'])?> teachers</button></form><?php endif; ?>
+<form method="post" action="<?=url('import/discard')?>"><?=Csrf::field()?><button class="btn">Discard</button></form></div></section><?php endif; ?>

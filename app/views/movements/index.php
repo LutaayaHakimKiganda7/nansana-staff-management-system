@@ -1,0 +1,16 @@
+<?php $title='Approvals'; $names=['transfer'=>'Transfers','retirement'=>'Retirement']; $me=Auth::user(); $canApprove=Auth::can('movements.approve'); ?>
+<div class="row between"><div><h1><?=e($names[$g]??'Requests and approvals')?></h1><p class="muted">Every change is checked by a second person before it touches a teacher's record.</p></div>
+<div class="row"><?php foreach(['transfer','retirement'] as $ty): if(can_request($ty)): ?><a class="btn <?=$ty==='transfer'?'primary':''?>" href="<?=url('movements/create',['type'=>$ty])?>"><?=e(MOVE_TYPES[$ty])?></a><?php endif; endforeach; ?></div></div>
+<form class="filters" method="get"><input type="hidden" name="r" value="movements/index">
+<select name="group"><option value="">All types</option><?php foreach($names as $k=>$n): ?><option value="<?=$k?>" <?=$g===$k?'selected':''?>><?=e($n)?></option><?php endforeach; ?></select>
+<select name="status"><option value="">Any status</option><?php foreach(['pending','approved','rejected','cancelled'] as $x): ?><option value="<?=$x?>" <?=$st===$x?'selected':''?>><?=ucfirst($x)?></option><?php endforeach; ?></select><button class="btn">Filter</button></form>
+<div class="card tablewrap"><table><thead><tr><th>Teacher</th><th>Request</th><th>Effective</th><th>Requested by</th><th>Status</th><th></th></tr></thead><tbody>
+<?php foreach($rows as $m): ?><tr><td data-l="Teacher"><a href="<?=url('ledger/profile',['id'=>$m['teacher_id']])?>"><b><?=e($m['surname'].' '.$m['first_name'])?></b></a><small><?=e($m['registration_no'])?></small></td>
+<td data-l="Request"><b><?=e(MOVE_TYPES[$m['type']])?><?=$m['outcome']?' ('.e($m['outcome']).')':''?></b>
+<?php if($m['type']==='transfer'): ?><small><?=e($m['from_name'])?> → <?=e($m['to_name'])?><?=$m['new_designation']?' · '.e($m['new_designation']):''?></small><?php endif; ?><?php if($m['reason']): ?><small><?=e($m['reason'])?></small><?php endif; ?></td>
+<td data-l="Effective"><?=fdate($m['effective_date'])?></td><td data-l="Requested by"><?=e($m['req_name']?:'—')?><small><?=e(substr($m['requested_at'],0,16))?></small></td>
+<td data-l="Status"><?=move_pill($m['status'])?><?php if($m['dec_name']): ?><small><?=e($m['dec_name'])?><?=$m['decision_note']?': '.e($m['decision_note']):''?></small><?php endif; ?></td>
+<td class="act"><?php if($m['status']==='pending'): ?>
+<?php if($canApprove && ($m['requested_by']!=$me['id'] || cfg('allow_self_approval'))): ?><form method="post" action="<?=url('movements/decide')?>" class="decide"><?=Csrf::field()?><input type="hidden" name="id" value="<?=$m['id']?>"><input name="note" placeholder="Note (required to reject)"><button name="decision" value="approve" class="btn primary">Approve</button><button name="decision" value="reject" class="btn">Reject</button></form><?php endif; ?>
+<?php if($m['requested_by']==$me['id'] || $me['role']==='admin'): ?><form method="post" action="<?=url('movements/cancel')?>" data-confirm="Cancel this request?"><?=Csrf::field()?><input type="hidden" name="id" value="<?=$m['id']?>"><button class="link">Cancel</button></form><?php endif; ?><?php endif; ?></td></tr>
+<?php endforeach; if(!$rows): ?><tr><td colspan="6" class="empty">Nothing here.</td></tr><?php endif; ?></tbody></table></div>

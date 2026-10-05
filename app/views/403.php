@@ -1,0 +1,1 @@
+<?php $title='No access'; ?><div class="card narrow"><h2>You don't have access to this page</h2><p class="muted">Ask the system administrator to change your role if you need it.</p><a class="btn" href="<?=url('dashboard/index')?>">Back to dashboard</a></div>
