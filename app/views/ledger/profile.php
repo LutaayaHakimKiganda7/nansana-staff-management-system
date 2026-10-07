@@ -1,6 +1,6 @@
 <?php $title='Teacher profile'; $row=fn($l,$v)=>'<div class="kv"><span>'.$l.'</span><b>'.($v!==null&&$v!==''?e($v):'—').'</b></div>'; ?>
 <div class="row between noprint"><a href="<?=url('ledger/index')?>">← Back to ledger</a><div class="row"><button class="btn" data-print>Print</button><?php if(Auth::can('teachers.manage')): ?><a class="btn primary" href="<?=url('teachers/form',['id'=>$t['id']])?>">Edit</a><?php endif; ?></div></div>
-<section class="card hero-p"><?=avatar($t,'big')?><div><h1><?=e(fullname($t))?></h1><p class="muted"><?=e($t['designation'])?> · <?=e($t['school_name']?:'No school')?></p>
+<section class="card hero-p"><?=avatar($t,'big')?><div><h1><?=e(fullname($t))?><?=verified_tick($t)?></h1><p class="muted"><?=e($t['designation'])?> · <?=e($t['school_name']?:'No school')?></p>
 <div class="row"><span class="pill <?=$t['payroll_status']==='on_payroll'?'active':'disabled'?>"><?=$t['payroll_status']==='on_payroll'?'On payroll':'Off payroll'?></span><span class="pill"><?=ucfirst($t['termination_status'])?></span>
 <span class="pill <?=$t['verified']?'active':''?>"><?=$t['verified']?'Verified':'Not verified'?></span><span class="pill">Biometrics <?=$t['biometrics_status']?></span></div></div></section>
 <?php if($t['termination_status']==='active'): ?><div class="row noprint" style="margin-bottom:1rem">
@@ -9,6 +9,11 @@
 </div><?php endif; ?>
 <?php if(Auth::can('biometrics.manage')): ?><div class="row noprint" style="margin-bottom:1rem"><a class="btn" href="<?=url('biometrics/capture',['id'=>$t['id']])?>">Capture biometrics</a><?php if($t['biometrics_status']==='captured'): ?><a class="btn" href="<?=url('biometrics/verify',['id'=>$t['id']])?>"><?=$t['verified']?'View verification':'Verify teacher'?></a><?php endif; ?></div><?php endif; ?>
 <?php if($t['verified']): ?><p class="muted">Verified by <?=e($t['verified_by_name']?:'an administrator')?> on <?=fdate($t['verified_at'])?>.</p><?php endif; ?>
+<section class="card"><h2>Quarterly biometric verification</h2>
+<p>Q<?=$quarter?> <?=$year?>: <?php if($t['termination_status']!=='active'): ?><span class="pill">Not required while <?=e($t['termination_status'])?></span><?php elseif(!empty($quarterly['verified_at'])): ?><span class="pill active">Verified <?=fdate($quarterly['verified_at'])?></span><?php elseif(!empty($quarterly['consented_at'])): ?><span class="pill warnp">In progress</span><?php else: ?><span class="pill">Due</span><?php endif; ?></p>
+<?php if(!empty($quarterly['verified_at'])): ?><p class="muted">Verified by <?=e($quarterly['verified_by_name']?:'an administrator')?> · <?=$quarterly['fingerprint_count']?> fingerprints recorded.</p><?php endif; ?>
+<?php if(Auth::can('biometrics.manage')&&$t['termination_status']==='active'): ?><a class="btn" href="<?=url('biometrics/quarterlycapture',['id'=>$t['id']])?>"><?=!empty($quarterly['verified_at'])?'View quarterly captures':(!empty($quarterly['consented_at'])?'Continue quarterly check':'Start quarterly check')?></a><?php endif; ?>
+<?php if($quarterlyHistory): ?><h3>Completed quarters</h3><ul class="feed"><?php foreach($quarterlyHistory as $v): ?><li><div><b>Q<?=$v['quarter']?> <?=$v['year']?></b><small><?=fdate($v['verified_at'])?> · <?=e($v['verified_by_name']?:'an administrator')?> · <?=$v['fingerprint_count']?> fingerprints</small></div></li><?php endforeach; ?></ul><?php endif; ?></section>
 <div class="cols"><section class="card"><h2>Personal and employment</h2><div class="kvs">
 <?=$row('Registration number',$t['registration_no'])?><?=$row('File number',$t['file_no'])?><?=$row('Date of birth',fdate($t['date_of_birth']))?><?=$row('Contact',$t['contact'])?><?=$row('Email',$t['email'])?>
 <?=$row('Date employed',fdate($t['date_employed']))?><?=$row('Date file opened',fdate($t['date_opened']))?><?=$row('Department',$t['department'])?><?=$row('Salary scale',$t['salary_scale'])?>

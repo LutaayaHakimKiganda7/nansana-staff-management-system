@@ -5,7 +5,7 @@ $msg=''; $done=false;
 if($_SERVER['REQUEST_METHOD']==='POST'){
     try{
         $pdo=DB::pdo();
-        foreach(['schema.sql','phase2_4.sql','phase5.sql','phase6.sql','phase7.sql'] as $f) foreach(array_filter(array_map('trim',explode(';',file_get_contents(__DIR__.'/../database/'.$f)))) as $sql){ $pdo->exec($sql); }
+        foreach(['schema.sql','phase2_4.sql','phase5.sql','phase6.sql','phase7.sql','phase9.sql'] as $f) foreach(array_filter(array_map('trim',explode(';',file_get_contents(__DIR__.'/../database/'.$f)))) as $sql){ $pdo->exec($sql); }
         if(DB::val('SELECT COUNT(*) FROM users')>0) throw new Exception('Already installed. Delete install.php.');
         $email=strtolower(trim($_POST['email'])); $pw=$_POST['password'];
         if(!filter_var($email,FILTER_VALIDATE_EMAIL) || strlen($pw)<10) throw new Exception('Use a valid email and a password of at least 10 characters.');

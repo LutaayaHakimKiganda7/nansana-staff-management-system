@@ -7,6 +7,7 @@ function fullname($t){ return trim($t['surname'].' '.$t['first_name']); }
 function initials($t){ return strtoupper(substr($t['surname'],0,1).substr($t['first_name'],0,1)); }
 function photo_url($t){ return !empty($t['photo']) ? base().'/uploads/photos/'.e($t['photo']) : null; }
 function avatar($t,$cls=''){ $u=photo_url($t); return $u ? '<img class="thumb '.$cls.'" src="'.$u.'" alt="">' : '<span class="thumb '.$cls.'">'.e(initials($t)).'</span>'; }
+function verified_tick($t){ return !empty($t['verified']) ? '<span class="verified-tick" role="img" aria-label="Verified teacher" title="Verified teacher"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 8 3.2 3.2L13 4.5"/></svg></span>' : ''; }
 function fdate($d){ return $d ? date('d M Y',strtotime($d)) : '—'; }
 function nz($v){ $v=trim((string)$v); return $v===''?null:$v; }
 function valid_date($v){ $d=DateTime::createFromFormat('Y-m-d',(string)$v); return $d && $d->format('Y-m-d')===$v; }

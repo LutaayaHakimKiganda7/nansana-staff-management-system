@@ -33,6 +33,9 @@ class LedgerController extends Controller {
         $kin=DB::all('SELECT * FROM teacher_kin WHERE teacher_id=? ORDER BY id',[$t['id']]);
         $posts=DB::all('SELECT p.*,s.name school_name FROM teacher_postings p JOIN schools s ON s.id=p.school_id WHERE p.teacher_id=? ORDER BY p.from_date DESC,p.id DESC',[$t['id']]);
         $moves=DB::all('SELECT m.*,fs.name from_name,ts.name to_name FROM movements m LEFT JOIN schools fs ON fs.id=m.from_school_id LEFT JOIN schools ts ON ts.id=m.to_school_id WHERE m.teacher_id=? ORDER BY m.id DESC',[$t['id']]);
-        $this->view('ledger/profile',compact('t','kin','posts','moves'));
+        $quarter=(int)ceil((int)date('n')/3); $year=(int)date('Y');
+        $quarterly=DB::row('SELECT v.*,u.name verified_by_name FROM quarterly_verifications v LEFT JOIN users u ON u.id=v.verified_by WHERE v.teacher_id=? AND v.year=? AND v.quarter=?',[$t['id'],$year,$quarter]);
+        $quarterlyHistory=DB::all('SELECT v.*,u.name verified_by_name FROM quarterly_verifications v LEFT JOIN users u ON u.id=v.verified_by WHERE v.teacher_id=? AND v.verified_at IS NOT NULL ORDER BY v.year DESC,v.quarter DESC LIMIT 8',[$t['id']]);
+        $this->view('ledger/profile',compact('t','kin','posts','moves','quarter','year','quarterly','quarterlyHistory'));
     }
 }

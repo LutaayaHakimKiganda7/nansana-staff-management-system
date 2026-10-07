@@ -18,6 +18,11 @@ class DashboardController extends Controller {
              'users'=>DB::val('SELECT COUNT(*) FROM users WHERE status="active"'),
              'failed'=>DB::val('SELECT COUNT(*) FROM audit_logs WHERE action="login_failed" AND created_at>NOW()-INTERVAL 24 HOUR')];
         $s['unverified']=$s['teachers']-$s['verified'];
+        if(Auth::can('biometrics.manage')){
+            $quarter=(int)ceil((int)date('n')/3);
+            $s['quarterly_due']=DB::val('SELECT COUNT(*) FROM teachers t LEFT JOIN quarterly_verifications v ON v.teacher_id=t.id AND v.year=? AND v.quarter=? WHERE t.termination_status="active" AND v.verified_at IS NULL',[$y,$quarter]);
+            $s['quarter']=$quarter;
+        }
         $retiring=DB::all("SELECT t.*,s.name school_name".TFROM." WHERE t.$act AND t.retirement_year BETWEEN ? AND ? ORDER BY t.retirement_year,t.date_of_birth LIMIT 6",[$y,$y+1]);
         $recent=Auth::can('audit.view')?DB::all('SELECT * FROM audit_logs ORDER BY id DESC LIMIT 6'):[];
         $this->view('dashboard/index',compact('s','retiring','recent','y'));

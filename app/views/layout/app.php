@@ -13,7 +13,7 @@ function ico($n){ $p=['home'=>'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10','users'=>'M1
 <a href="<?=url('schools/index')?>" class="<?=$sec==='schools'?'on':''?>"><?=ico('school')?>Schools</a>
 <a href="<?=url('movements/index')?>" class="<?=$sec==='movements'?'on':''?>"><?=ico('log')?>Approvals</a>
 <a href="<?=url('retirement/index')?>" class="<?=$sec==='retirement'?'on':''?>"><?=ico('key')?>Retirement</a><?php endif; ?>
-<?php if(Auth::can('biometrics.manage')): ?><a href="<?=url('biometrics/index')?>" class="<?=$sec==='biometrics'?'on':''?>"><?=ico('key')?>Verification</a><?php endif; ?>
+<?php if(Auth::can('biometrics.manage')): ?><a href="<?=url('biometrics/index')?>" class="<?=$sec==='biometrics'?'on':''?>"><?=ico('key')?>Verification</a><a href="<?=url('biometrics/quarterly')?>" class="<?=$sec==='biometrics'?'on':''?>"><?=ico('key')?>Quarterly checks</a><?php endif; ?>
 <?php if(Auth::can('messaging.send')||Auth::can('messaging.log')): ?><a href="<?=url('messaging/index')?>" class="<?=$sec==='messaging'?'on':''?>"><?=ico('menu')?>Messaging</a><?php endif; ?>
 <?php if(Auth::can('users.manage')): ?><a href="<?=url('users/index')?>" class="<?=$sec==='users'?'on':''?>"><?=ico('users')?>Users</a><?php endif; ?>
 <?php if(Auth::can('audit.view')): ?><a href="<?=url('audit/index')?>" class="<?=$sec==='audit'?'on':''?>"><?=ico('log')?>Audit log</a><?php endif; ?>

@@ -1,7 +1,7 @@
 <?php $title=$t?'Edit teacher':'Register teacher'; $O=$_SESSION['old']??[];
 $v=fn($k,$d='')=>e($O[$k]??($t[$k]??$d));
 $kinRows=[]; for($i=0;$i<3;$i++){ $kinRows[]=isset($O['kin_name'])?['name'=>$O['kin_name'][$i]??'','relationship'=>$O['kin_rel'][$i]??'','contact'=>$O['kin_contact'][$i]??'','nin'=>$O['kin_nin'][$i]??'']:($kin[$i]??['name'=>'','relationship'=>'','contact'=>'','nin'=>'']); } ?>
-<h1><?=$title?></h1><?php if($t): ?><p class="muted"><?=e(fullname($t))?> · <?=e($t['registration_no'])?></p><?php endif; ?>
+<h1><?=$title?></h1><?php if($t): ?><p class="muted"><?=e(fullname($t))?><?=verified_tick($t)?> · <?=e($t['registration_no'])?></p><?php endif; ?>
 <form method="post" action="<?=url('teachers/save')?>" enctype="multipart/form-data" class="tform"><?=Csrf::field()?><input type="hidden" name="id" value="<?=e($t['id']??0)?>"><input type="hidden" name="base_updated" value="<?=e($t['updated_at']??'')?>">
 <div class="tabs" role="tablist"><button type="button" class="on" data-tab="a">Personal</button><button type="button" data-tab="b">Employment</button><button type="button" data-tab="c">IDs</button><button type="button" data-tab="d">Next of kin</button><button type="button" data-tab="e">Teaching</button></div>
 <section class="card tab on" data-pane="a"><div class="grid">

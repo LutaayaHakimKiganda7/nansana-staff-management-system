@@ -42,3 +42,9 @@ No database changes. Upload the files.
 - **Hosting:** point the domain at `public/`. If you cannot, copy `deploy/root.htaccess` to the project root as `.htaccess` (URLs then contain `/public/`).
 - **Backups:** Admin > Backups (back up now, download), plus a daily cron `php cron/backup.php`. Keep `storage/app.key` somewhere separate.
 - **Import:** Teachers > Import CSV (template, check, then confirm; all or nothing, each teacher audited).
+
+## Quarterly biometric verification
+Upload the files and run `database/phase9.sql` once on an existing installation. Fresh installs apply it automatically.
+- System Admin > Quarterly checks lists every active teacher for the current calendar quarter (Jan–Mar, Apr–Jun, Jul–Sep, Oct–Dec).
+- Each check requires new consent, a newly captured face image, and at least 2 newly captured fingerprints. Quarterly captures are encrypted and stored separately from the original identity-verification biometrics.
+- Quarterly completion is recorded by teacher, year, and quarter, with an audit entry. The dashboard shows how many active teachers remain due; teacher profiles show current and completed quarters.
